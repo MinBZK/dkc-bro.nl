@@ -1,0 +1,91 @@
+version: "3.1"
+
+services:
+  db-dkcbro:
+    image: postgres:latest
+    ports:
+      - ${POSTGRES_PORT}:5432
+    volumes:
+      - expert_services:/var/lib/postgresql/data
+    environment:
+      PGUSER: ${POSTGRES_USER}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    command: [ "postgres", "-c", "log_statement=all", "-p", "${POSTGRES_PORT}" ]
+
+  api:
+    build:
+      context: .
+      dockerfile: RWS.Dockerfile
+    ports:
+      - 8000:8000
+    depends_on:
+      - db-dkcbro
+    environment:
+      POSTGRES_SERVER: db-dkcbro
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    command: >
+      bash -c "alembic -c alembic/alembic.ini upgrade head
+      && uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    
+  poller:
+    build:
+      context: .
+      dockerfile: RWS.Dockerfile
+    ports:
+      - 8001:8000
+    depends_on:
+      - api
+      - db-dkcbro
+    environment:
+      POSTGRES_SERVER: db-dkcbro
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    command: >
+      bash -c "alembic -c alembic/alembic.ini upgrade head
+      && uvicorn app.main_poller:app --host 0.0.0.0 --port 8000"
+      
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      - api
+    environment:
+        NODE_ENV: development
+    volumes:
+      - ../frontend/nginx/dev_nginx.conf:/etc/nginx/nginx.conf
+
+
+  dbgate:
+    image: dbgate/dbgate:alpine
+    container_name: dbgate-bro
+    volumes:
+      - dbgate:/root/.dbgate
+    depends_on:
+      - db-dkcbro
+    ports:
+      - 8091:3000
+    environment:
+      CONNECTIONS: CONNECTION_1
+
+      LABEL_CONNECTION_1: ${POSTGRES_DB}
+      SERVER_CONNECTION_1: 'db-dkcbro'
+      USER_CONNECTION_1: ${POSTGRES_USER}
+      PASSWORD_CONNECTION_1: ${POSTGRES_USER}
+      PORT_CONNECTION_1: ${POSTGRES_PORT}
+      ENGINE_CONNECTION_1: postgres@dbgate-plugin-postgres
+
+volumes:
+  dbgate:
+    name: expert_services_dbgate
+  expert_services:
+    name: expert_service_databases
