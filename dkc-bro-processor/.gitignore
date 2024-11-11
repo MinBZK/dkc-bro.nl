@@ -1,0 +1,34 @@
+# Backend
+__pycache__
+.venv
+.idea
+.vscode
+.ruff_cache
+.env
+env
+vscode
+.coverage
+coverage.xml
+.pdm-python
+venv
+
+# Secrets
+deployment/*.txt
+deployment/*.json
+
+
+# Frontend
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+**/coverage-*.json
+coverage/
+dist
+dist-ssr
+site
+coverage
+*.local
+/cypress/videos/
+/cypress/screenshots/

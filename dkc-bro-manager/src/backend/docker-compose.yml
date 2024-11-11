@@ -1,0 +1,78 @@
+services:
+  db-dkcbro:
+    image: postgres:14-alpine
+    ports:
+      - ${POSTGRES_PORT}:5432
+    volumes:
+      - expert_services:/var/lib/postgresql/data
+    networks:
+      - dkc-bro-processor_dkc-bro-net
+    working_dir: /mnt
+    environment:
+      PGUSER: ${POSTGRES_USER}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    command: ["postgres", "-c", "log_statement=all", "-p", "${POSTGRES_PORT}"]
+
+  api:
+    build:
+      context: .
+      dockerfile: Opensource.Dockerfile
+    ports:
+      - ${MANAGER_API_PORT}:${MANAGER_API_PORT}
+    depends_on:
+      - db-dkcbro
+    volumes:
+      - ./alembic:/backend/alembic
+      - ./app:/backend/app
+      - ./scripts:/backend/scripts
+      - ./tests:/backend/tests
+      - ./.env:/backend/.env
+      - ./Makefile:/backend/Makefile
+      - ./pytest.ini:/backend/pytest.ini
+    networks:
+      - dkc-bro-processor_dkc-bro-net
+    env_file:
+      - .env
+    environment:
+      POSTGRES_SERVER: db-dkcbro
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    command: >
+      bash -c "python3 -m app.create_database &&
+      alembic -c alembic/alembic.ini upgrade head &&
+      uvicorn app.main:app --host 0.0.0.0 --port 8000"
+
+  dbgate:
+    image: dbgate/dbgate:alpine
+    container_name: dbgate
+    volumes:
+      - dbgate:/root/.dbgate
+    depends_on:
+      - db-dkcbro
+    ports:
+      - 8091:3000
+    networks:
+      - dkc-bro-processor_dkc-bro-net
+    environment:
+      CONNECTIONS: PUBLIC
+
+      LABEL_PUBLIC: ${POSTGRES_DB}
+      SERVER_PUBLIC: 'db-dkcbro'
+      USER_PUBLIC: ${POSTGRES_USER}
+      PASSWORD_PUBLIC: ${POSTGRES_PASSWORD}
+      PORT_PUBLIC: ${POSTGRES_PORT}
+      ENGINE_PUBLIC: postgres@dbgate-plugin-postgres
+
+volumes:
+  dbgate:
+    name: expert_services_dbgate
+  expert_services:
+    name: expert_service_databases
+
+networks:
+  dkc-bro-processor_dkc-bro-net:
+    external: true

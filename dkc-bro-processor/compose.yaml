@@ -1,0 +1,21 @@
+services:
+  dkc-bro-processor:
+   build:
+     context: ./
+     dockerfile: backend/Dockerfile
+   ports:
+     - ${PROCESSOR_API_PORT}:${PROCESSOR_API_PORT}
+   env_file:
+     - .env
+   volumes:
+      - ./backend/app:/backend/app
+      - ./backend/test:/backend/test
+      - ./backend/pyproject.toml:/backend/pyproject.toml
+      - ./backend/pdm.lock:/backend/pdm.lock
+   networks:
+     - dkc-bro-net
+   command: /bin/sh -c "uvicorn app.main:app --reload --host 0.0.0.0 --port ${PROCESSOR_API_PORT}"
+
+networks:
+  dkc-bro-net:
+    driver: bridge

@@ -1,0 +1,21 @@
+services:
+  poller:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    networks:
+      - dkc-bro-processor_dkc-bro-net
+    volumes:
+      - ./app:/poller/app
+      - ./pyproject.toml:/poller/pyproject.toml
+      - ./app/pdm.lock:/poller/pdm.lock
+    environment:
+      MANAGER_URL: ${MANAGER_URL}
+      RWS_BHP_ENDPOINT: ${RWS_BHP_ENDPOINT}
+      RWS_BHP_USERNAME: ${RWS_BHP_USERNAME}
+      RWS_BHP_TOKEN: ${RWS_BHP_TOKEN}
+    command: ["python", "-m", "app"]
+
+networks:
+  dkc-bro-processor_dkc-bro-net:
+    external: true

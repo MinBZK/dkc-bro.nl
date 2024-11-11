@@ -1,0 +1,65 @@
+<?xml version="1.0" standalone="yes"?>
+<ns:registrationRequest xmlns:ns="http://www.broservices.nl/xsd/isgmw/1.1"
+    xmlns:ns1="http://www.broservices.nl/xsd/brocommon/3.0"
+    xmlns:ns2="http://www.broservices.nl/xsd/gmwcommon/1.1"
+    xmlns:ns3="http://www.opengis.net/gml/3.2">
+    <ns1:requestReference>N1</ns1:requestReference>
+    <ns1:deliveryAccountableParty>27364178</ns1:deliveryAccountableParty>
+    <ns1:qualityRegime>IMBRO/A</ns1:qualityRegime>
+    <ns1:underPrivilege>ja</ns1:underPrivilege>
+    <ns:sourceDocument>
+        <ns:GMW_Construction>
+            <ns:objectIdAccountableParty>N1</ns:objectIdAccountableParty>
+            <ns:deliveryContext codeSpace="urn:bro:gmw:DeliveryContext">WwW</ns:deliveryContext>
+            <ns:constructionStandard codeSpace="urn:bro:gmw:ConstructionStandard">onbekend</ns:constructionStandard>
+            <ns:initialFunction codeSpace="urn:bro:gmw:InitialFunction">onbekend</ns:initialFunction>
+            <ns:numberOfMonitoringTubes>1</ns:numberOfMonitoringTubes>
+            <ns:groundLevelStable>onbekend</ns:groundLevelStable>
+            <ns:wellStability codeSpace="urn:bro:gmw:WellStability">onbekend</ns:wellStability>
+            <ns:owner>27364178</ns:owner>
+            <ns:maintenanceResponsibleParty>09083617</ns:maintenanceResponsibleParty>
+            <ns:wellHeadProtector codeSpace="urn:bro:gmw:WellHeadProtector">onbekend</ns:wellHeadProtector>
+            <ns:wellConstructionDate>
+                <ns1:year>2008</ns1:year>
+            </ns:wellConstructionDate>
+            <ns:deliveredLocation>
+                <ns2:location srsName="urn:ogc:def:crs:EPSG::28992" ns3:id="id-8430cd04-bf44-404f-b4f5-f79f47bda760">
+                    <ns3:pos>69194.0 446960.0</ns3:pos>
+                </ns2:location>
+                <ns2:horizontalPositioningMethod codeSpace="urn:bro:gmw:HorizontalPositioningMethod">onbekend</ns2:horizontalPositioningMethod>
+            </ns:deliveredLocation>
+            <ns:deliveredVerticalPosition>
+                <ns2:localVerticalReferencePoint codeSpace="urn:bro:gmw:LocalVerticalReferencePoint">NAP</ns2:localVerticalReferencePoint>
+                <ns2:offset uom="m">0.000</ns2:offset>
+                <ns2:verticalDatum codeSpace="urn:bro:gmw:VerticalDatum">NAP</ns2:verticalDatum>
+                <ns2:groundLevelPosition uom="m">2.570</ns2:groundLevelPosition>
+                <ns2:groundLevelPositioningMethod codeSpace="urn:bro:gmw:GroundLevelPositioningMethod">onbekend</ns2:groundLevelPositioningMethod>
+            </ns:deliveredVerticalPosition>
+            <ns:monitoringTube>
+                <ns:tubeNumber>1</ns:tubeNumber>
+                <ns:tubeType codeSpace="urn:bro:gmw:TubeType">standaardbuis</ns:tubeType>
+                <ns:artesianWellCapPresent>onbekend</ns:artesianWellCapPresent>
+                <ns:sedimentSumpPresent>nee</ns:sedimentSumpPresent>
+                <ns:numberOfGeoOhmCables>0</ns:numberOfGeoOhmCables>
+                <ns:tubeTopDiameter uom="mm" xsi:nil="true"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+                <ns:variableDiameter>onbekend</ns:variableDiameter>
+                <ns:tubeStatus codeSpace="urn:bro:gmw:TubeStatus">onbekend</ns:tubeStatus>
+                <ns:tubeTopPosition uom="m">3.300</ns:tubeTopPosition>
+                <ns:tubeTopPositioningMethod codeSpace="urn:bro:gmw:TubeTopPositioningMethod">onbekend</ns:tubeTopPositioningMethod>
+                <ns:materialUsed>
+                    <ns2:tubePackingMaterial codeSpace="urn:bro:gmw:TubePackingMaterial">onbekend</ns2:tubePackingMaterial>
+                    <ns2:tubeMaterial codeSpace="urn:bro:gmw:TubeMaterial">onbekend</ns2:tubeMaterial>
+                    <ns2:glue codeSpace="urn:bro:gmw:Glue">onbekend</ns2:glue>
+                </ns:materialUsed>
+                <ns:screen>
+                    <ns:screenLength uom="m">1.000</ns:screenLength>
+                    <ns:sockMaterial codeSpace="urn:bro:gmw:SockMaterial">onbekend</ns:sockMaterial>
+                </ns:screen>
+                <ns:plainTubePart>
+                    <ns2:plainTubePartLength uom="m">3.170</ns2:plainTubePartLength>
+                </ns:plainTubePart>
+            </ns:monitoringTube>
+        </ns:GMW_Construction>
+    </ns:sourceDocument>
+</ns:registrationRequest>
