@@ -55,17 +55,17 @@
               ></v-text-field>
             </v-col>
             <v-col cols="12" sm="12" md="12" lg="12">
-              <v-text-field
-                label="Organisatiecode"
+              <v-select
+                label="Organisatie"
                 outlined
                 v-model="newUserCredentials.org_code"
                 id="orgCode"
                 required
-                type="text"
+                :items="availableOrgs"
                 :rules="[
-                  (v) => !!v || 'Organisatiecode moet zijn ingevuld.',
+                  (v) => !!v || 'Organisatie moet zijn ingevuld.',
                 ]"
-              ></v-text-field>
+              ></v-select>
             </v-col>
             <v-col cols="12" sm="12" md="6" lg="12">
               <v-btn
@@ -102,7 +102,7 @@
         <template v-if="this.error">
           <v-alert type="error">
             Er is iets mis gegaan:
-            <pre> {{ this.detail.data.detail }} </pre>
+            <pre> {{ this.detail.data.detail[0]['msg'] }} </pre>
           </v-alert>
         </template>
       </v-col>
@@ -125,6 +125,10 @@ const states = {
 export default Vue.extend({
   name: "RegisterUserComponent",
   data: () => ({
+    availableOrgs: [
+      { text: "Rijkswaterstaat", value: "rws" },
+      // Add future organizations here ...
+    ],
     newUserCredentials: {
       email: "",
       password: "",

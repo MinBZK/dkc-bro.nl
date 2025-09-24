@@ -1,4 +1,5 @@
 import logging
+import time
 
 import requests.exceptions
 
@@ -40,9 +41,18 @@ def extract_project_batches_to_process(
 
 
 def fetch_bhp_projects(bhp: BHPClient) -> list[BhpProject]:
-    bhp_projects = bhp.get_projects()
-    bhp_projects = bhp.load_batch_ids(bhp_projects)
-    return bhp_projects
+    attempts = 3
+    for attempt in range(attempts):
+        try:
+            bhp_projects = bhp.get_projects()
+            bhp_projects = bhp.load_batch_ids(bhp_projects)
+            return bhp_projects
+        except (requests.exceptions.HTTPError, requests.exceptions.ConnectTimeout) as e:
+            if e.response.status_code >= 500 and attempt < attempts - 1:
+                logger.warning(f"Attempt {attempt + 1} failed with status 500. Retrying in 60 seconds...")
+                time.sleep(60)
+            else:
+                raise
 
 
 def fetch_manager_data(manager: ManagerClient) -> tuple[list[int], list[str]]:
@@ -107,7 +117,7 @@ def process_documents(bhp: BHPClient, manager: ManagerClient, documents: list[Fu
         importances, feedback_messages = send_document_findings_to_bhp(bhp, doc_with_results)
         batch_summaries[doc_with_results.levering_id].importance_list.extend(importances)
         batch_summaries[doc_with_results.levering_id].feedback_messages.extend(feedback_messages)
-    logger.info("Finished handling od document-level findings\n")
+    logger.info("Finished handling of document-level findings\n")
 
     logger.info("Starting handling of batch summaries and reports...")
     for summary in batch_summaries.values():
@@ -123,11 +133,15 @@ def process_documents(bhp: BHPClient, manager: ManagerClient, documents: list[Fu
             report = manager.generate_findings_report(summary.batch_id)
             bhp.send_batch_pdf_report(summary.project_id, summary.batch_id, report)
         except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 424:
+                logger.info(f"PDF report not available for batch {summary.batch_id}. Skipping.")
             if e.response.status_code == 404:
                 logger.warning(
                     f"Failed sending PDF report. "
                     f"Batch {summary.batch_id} is not found for this organization or has already been assigned to an existing organization."
                 )
+            else:
+                logger.error(f"Failed to send PDF report for batch {summary.batch_id}. Status code: {e.response.status_code}, reason: {e.response.reason}")
 
 
 def send_to_manager(

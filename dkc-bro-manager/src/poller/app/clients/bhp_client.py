@@ -16,7 +16,7 @@ class BHPClient:
         """
         Reusable method for fetching data from the BHP
         """
-        response = self.session.get(f"{self.base_url}/{url_slug}", timeout=30)
+        response = self.session.get(f"{self.base_url}/{url_slug}", timeout=60)
         response.raise_for_status()
         return response
 

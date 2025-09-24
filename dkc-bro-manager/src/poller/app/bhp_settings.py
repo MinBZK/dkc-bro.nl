@@ -1,4 +1,3 @@
-
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -14,6 +13,13 @@ class RwsBhpSettings(BaseSettings):
     bhp_username: str
     bhp_token: str
 
+
+class IctuBhpSettings(BaseSettings):
+    model_config = SettingsConfigDict(env_prefix='ICTU_')
+
+    org_code: str
+    bhp_username: str
+    bhp_token: str
 
 # Add settings for additional organization here, example:
 #

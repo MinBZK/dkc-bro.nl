@@ -13,12 +13,7 @@ Debugging FastAPI applications is possible without extra configuration. See http
 0. Make sure you are in the backend folder. `cd backend`
 1. Configure environment configuration: `cp .env.example .env`. A `.env` file is created.
 2. Start the db: `docker compose up -d db dbgate`. Wait for the database to fully start.
-3. Update the db: `pdm run alemibc upgrade head`
 
-## Create new revision based on models
-1. `alembic revision --autogenerate -m "{revision_message}"`
-
-## Pre-commit
 To enable pre-commit use `pdm pre-commit install`
 For autoupdate use `pdm run pre-commit autoupdate`
 For using on all files `pdm run pre-commit run --all-files -v` 

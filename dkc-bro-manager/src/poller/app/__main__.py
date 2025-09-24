@@ -1,9 +1,9 @@
 import logging
 
-from pydantic_settings import BaseSettings
+import requests
 
 from app import utils
-from app.bhp_settings import SharedSettings, RwsBhpSettings
+from app.bhp_settings import SharedSettings, RwsBhpSettings, IctuBhpSettings
 from app.clients import BHPClient, ManagerClient
 
 logging.basicConfig(
@@ -15,7 +15,8 @@ logger = logging.getLogger(__name__)
 
 shared_settings = SharedSettings()
 
-def run_poller_for_org(org_settings: BaseSettings):
+
+def run_poller_for_org(org_settings):
     """
     Run the poller for a specific organization, using the provided settings (with BHP credentials).
     """
@@ -29,7 +30,11 @@ def run_poller_for_org(org_settings: BaseSettings):
     manager = ManagerClient(shared_settings.manager_url, org_settings.org_code)
 
     logger.info("Fetching data from BHP...")
-    bhp_projects = utils.fetch_bhp_projects(bhp)
+    try:
+        bhp_projects = utils.fetch_bhp_projects(bhp)
+    except requests.exceptions.HTTPError as e:
+        logger.warning(f"Failed to fetch BHP projects: Status: {e.response.status_code}, reason: {e.response.reason}. Exiting.")
+        return
     logger.info(f"Done. Found {len(bhp_projects)} existing BHP projects in total.\n")
 
     logger.info("Fetching data from DKC-BRO Manager...")
@@ -56,7 +61,14 @@ if __name__ == "__main__":
     # Setting per organization, imported from module `bhp_settings.py`
     # For additional organizations, create and import the settings and add them to `settings_list`
     rws_settings = RwsBhpSettings()
-    settings_list = [rws_settings]
+    # ictu_settings = IctuBhpSettings()
+    settings_list = [
+        rws_settings,
+        # ictu_settings
+    ]
 
     for settings in settings_list:
-        run_poller_for_org(settings)
+        try:
+            run_poller_for_org(settings)
+        except Exception as e:
+            logger.error(f"An error occurred during the poller run for org {settings.org_code}: {e}")

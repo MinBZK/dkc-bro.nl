@@ -1,7 +1,9 @@
 FROM node:20-alpine
 
+WORKDIR /app
+
 # Copy source code
-COPY ./src/frontend ./src/frontend
+COPY ./src/frontend /app
 
 # Install dependencies
 RUN npm ci

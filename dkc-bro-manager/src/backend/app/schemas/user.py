@@ -49,7 +49,7 @@ class UserCreate(UserBase):
             email_domain = email.split("@")[-1].split(".")[0]
             if email_domain != org_code:
                 raise ValueError(
-                    "The org code must match the email domain without extension."
+                    "Ongeldig email domain bij de gekozen organisatie."
                 )
         return values
 

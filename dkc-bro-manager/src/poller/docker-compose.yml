@@ -11,9 +11,13 @@ services:
       - ./app/pdm.lock:/poller/pdm.lock
     environment:
       MANAGER_URL: ${MANAGER_URL}
-      RWS_BHP_ENDPOINT: ${RWS_BHP_ENDPOINT}
+      BHP_ENDPOINT: ${BHP_ENDPOINT}
+      RWS_ORG_CODE: ${RWS_ORG_CODE}
       RWS_BHP_USERNAME: ${RWS_BHP_USERNAME}
       RWS_BHP_TOKEN: ${RWS_BHP_TOKEN}
+      ICTU_ORG_CODE: ${ICTU_ORG_CODE}
+      ICTU_BHP_USERNAME: ${ICTU_BHP_USERNAME}
+      ICTU_BHP_TOKEN: ${ICTU_BHP_TOKEN}
     command: ["python", "-m", "app"]
 
 networks:

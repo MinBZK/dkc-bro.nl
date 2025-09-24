@@ -21,7 +21,20 @@ De omgevingsvariabelen worden gelezen uit een `.env`-bestand in zowel src/backen
    ```
    cd src/backend && cp .env.example .env && cd ../frontend && cp .env.example .env
    ```
-### Backend (met pip)
+### Backend
+#### Docker compose (aanbevolen)
+0. Zorg er eerste voor dat de backend van `dkc-bro-processor` al draait (apart project)
+1. Voor MacOS met een M1-chip kan het noodzakelijk zijn om eerst het volgende command te runnen `export DOCKER_DEFAULT_PLATFORM=linux/amd64`
+2. Open een terminal en navigeer naar de backend-directory met:
+   ```
+   cd src/backend
+   ```
+3. Start het project met docker-compose:
+   ```
+    docker compose up -d
+    ```
+
+
 #### Windows
 1. Open een terminal en navigeer naar de backend-directory met:
    ```

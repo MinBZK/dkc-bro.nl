@@ -42,9 +42,22 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     command: >
-      bash -c "python3 -m app.create_database &&
+      bash -c "echo \"waiting for DB to start\" &&
+      sleep 5 &&
+      python3 -m app.create_database &&
       alembic -c alembic/alembic.ini upgrade head &&
       uvicorn app.main:app --host 0.0.0.0 --port 8000"
+      
+#  frontend:
+#    build:
+#      context: ../frontend
+#      dockerfile: Opensource.Dockerfile
+#    ports:
+#      - 8080:8080
+#    depends_on:
+#      - api
+#    environment:
+#        NODE_ENV: development
 
   dbgate:
     image: dbgate/dbgate:alpine

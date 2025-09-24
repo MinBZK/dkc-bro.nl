@@ -8,5 +8,5 @@ die samen de basis-codebase vormen voor de multi-tenant variant van Datakwalitei
    
 Zie de README van elk van de onderdelen voor een uitleg.   
    
-De backup map bevat nog de oude variant, deze zal binnenkort verwijderd worden.
+De backup map bevat nog de oude variant, voor een single-tenant eneen ander spplicatie structuur.
 

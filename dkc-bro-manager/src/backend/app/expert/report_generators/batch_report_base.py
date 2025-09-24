@@ -42,11 +42,18 @@ def get_batch_report(
 
     data = crud_finding.get_findings_per_document_by_batch_id(db=db, batch_id=batch_id)
     historicaldata = crud_finding.get_previous_batches(db=db, batch_id=batch_id)
-    tempFilePath = expert.generate_report(
-        batch_id=batch_id,
-        data=data,
-        historicaldata=historicaldata,
-    )
+    try:
+        tempFilePath = expert.generate_report(
+            batch_id=batch_id,
+            data=data,
+            historicaldata=historicaldata,
+        )
+    except IndexError:
+        raise HTTPException(
+            status_code=424,
+            detail="Generation of report not possible for invalid document.",
+        )
+
 
     background_tasks.add_task(os.unlink, tempFilePath)
 
